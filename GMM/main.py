@@ -11,8 +11,8 @@ def generate_data(k=4, size=1000, m=2):
 
     data = None
 
-    means = np.array([[1,1],
-                      [1,-1],
+    means = np.array([[1,0.5],
+                      [1,-0.7],
                       [-1,1],
                       [-1,-1]]) + np.random.rand(k, m) * 0.01
 
@@ -62,8 +62,15 @@ def mse(x, y):
     return np.sqrt(np.sum((x - y) ** 2))
 
 plt.scatter(mu[:, 0], mu[:, 1], c='red')
+plt.scatter(data[:, 0], data[:, 1])
+plt.scatter(mu[:, 0], mu[:, 1], c='green')
+plt.axis()
+plt.title("scatter")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.show()
 
-for t in range(100):
+for t in range(2000):
     old_alpha = copy.deepcopy(alpha)
     old_mu = copy.deepcopy(mu)
     old_sigma = copy.deepcopy(sigma)
@@ -82,7 +89,6 @@ for t in range(100):
     #update mu
     to_data = q.reshape(q.shape[0], q.shape[1], -1) * data.reshape(data.shape[0], -1, data.shape[1])
     mu = np.sum(to_data, axis=0) / np.sum(q, axis=0).reshape(q.shape[1], -1)
-    print()
 
     #updaye sigma
     sum_sigma = np.zeros(shape=(size, k, m, m))
@@ -99,14 +105,6 @@ for t in range(100):
 
     print('iter : {}  loss : {}'.format(t, loss))
 
-
-plt.scatter(data[:, 0], data[:, 1])
-plt.scatter(mu[:, 0], mu[:, 1], c='green')
-plt.axis()
-plt.title("scatter")
-plt.xlabel("x")
-plt.ylabel("y")
-plt.show()
 
 q = np.zeros(shape=(size, k))
 for i in range(size):
